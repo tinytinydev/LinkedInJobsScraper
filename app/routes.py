@@ -9,9 +9,23 @@ from flask import jsonify, request, render_template
 def test():
     return render_template('index.html', title='Home')
 
-@app.route('/keywords',methods=['POST'])
-def index():
+@app.route('/api/xtract',methods=['POST'])
+def keyword_PAI():
     source_path = request.json.get('url')
+    return extract_info(source_path)
+    
+@app.route('/view/xtract',methods=['POST'])
+def keyword_form():
+
+    data = request.form.to_dict(flat=False)
+
+    source_path = request.form['url']
+    print("URL: " + source_path)
+    xtracted_info = extract_info(source_path)
+
+    return render_template('xtracted.html', title='Xtracted')
+
+def extract_info(source_path):
     page = requests.get(source_path)
     page_content = page.content
 
@@ -56,7 +70,6 @@ def index():
         
 
     return {"keywords": get_keywords(filtered_str),"must": get_musthave(filtered_str)} # To get keyword phrases ranked highest to lowest.
-
 
 def get_keywords(content):
     
