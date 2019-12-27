@@ -1,4 +1,4 @@
-from app import app
+from flask import Blueprint, render_template, abort
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -6,16 +6,19 @@ from nltk.corpus import stopwords
 from rake_nltk import Rake
 from flask import jsonify, request, render_template
 
-@app.route('/')
+routing = Blueprint("Routing",__name__,template_folder='templates')
+
+@routing.route('/')
+@routing.route('/index')
 def test():
     return render_template('index.html', title='Home')
 
-@app.route('/api/xtract',methods=['POST'])
+@routing.route('/api/xtract',methods=['POST'])
 def keyword_PAI():
     source_path = request.json.get('url')
     return extract_info(source_path)
     
-@app.route('/view/xtract',methods=['POST'])
+@routing.route('/view/xtract',methods=['POST'])
 def keyword_form():
 
     data = request.form.to_dict(flat=False)
@@ -27,15 +30,18 @@ def keyword_form():
     return render_template('xtracted.html', title='Xtracted',keywords= xtracted_info["keywords"],must=xtracted_info["must"],html=xtracted_info["html"])
 
 def extract_info(source_path):
-
-
-
     page = requests.get(source_path)
     page_content = page.content
 
     soup = BeautifulSoup(page_content, 'html.parser')
+    try:
+        print(soup.find('title'))
+        title = soup.find('title') #Job Posting title
 
-    title = soup.find('title').get_text() #Job Posting title
+        if type(title) != 'NoneType':
+            title = title.get_text()
+    except:
+        print("title not found")
     company = soup.find("a",{"class":"topcard__org-name-link"}).get_text() #Company Name
 
     content = ""
