@@ -23,16 +23,12 @@ def keyword_form():
     source_path = request.form['url']
     print("URL: " + source_path)
     xtracted_info = extract_info(source_path)
-    print(xtracted_info["screenshot"])
+
     return render_template('xtracted.html', title='Xtracted',keywords= xtracted_info["keywords"],must=xtracted_info["must"],html=xtracted_info["html"])
 
 def extract_info(source_path):
 
-    DRIVER = 'chromedriver'
-    driver = webdriver.Chrome(DRIVER)
-    driver.get('source_path')
-    screenshot = driver.save_screenshot('screen_grab.png')
-    driver.quit()
+
 
     page = requests.get(source_path)
     page_content = page.content
@@ -63,6 +59,9 @@ def extract_info(source_path):
                 content += child + '\n'
         
     original_content = content
+
+    original_content = original_content.replace("\n","</br>")
+
     content = content.lower()
         
     word_arr = content.split(" ")
@@ -77,7 +76,7 @@ def extract_info(source_path):
         filtered_str += word + " "
         
 
-    return {"keywords": get_keywords(filtered_str),"must": get_musthave(filtered_str),"html":original_content,"screenshot":screenshot} # To get keyword phrases ranked highest to lowest.
+    return {"keywords": get_keywords(filtered_str),"must": get_musthave(filtered_str),"html":original_content} # To get keyword phrases ranked highest to lowest.
 
 def get_keywords(content):
     keywords = []
@@ -95,7 +94,7 @@ def get_keywords(content):
 
 def get_musthave(content):
     
-    must_keywords = ["must", "strong", "required","have","preferred"]
+    must_keywords = ["must", "strong", "required","have","preferred","least"]
     must_content = []
     
     sentences = []

@@ -28,7 +28,11 @@
                 <div class="mdl-grid">
                         <h4>Must Haves</h3><br>
                         <div class="viewBox">
-
+                            {%for keyword in must%} 
+                            <span class="mdl-chip">
+                                <span class="mdl-chip__text">{{keyword}}</span>
+                            </span>
+                        {%endfor%}
                         </div>
                 </div>
 
@@ -36,7 +40,7 @@
                   
                     <h4>Original Content</h4>
                     <div class="viewBox">
-                        {{html}}
+                        {{html|safe}}
                     </div>
                         
                     </div>
