@@ -27,7 +27,11 @@
                 <div class="mdl-grid">
                         <h4>Ranked Keywords</h3><br>
                         <div class="viewBox">
-            
+                            {%for keyword in keywords%} 
+                                <span class="mdl-chip">
+                                    <span class="mdl-chip__text">{{keyword}}</span>
+                                </span>
+                            {%endfor%}
                         </div>
                 </div>
             

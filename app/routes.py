@@ -23,7 +23,7 @@ def keyword_form():
     print("URL: " + source_path)
     xtracted_info = extract_info(source_path)
 
-    return render_template('xtracted.html', title='Xtracted')
+    return render_template('xtracted.html', title='Xtracted',keywords= xtracted_info["keywords"],must=xtracted_info["must"])
 
 def extract_info(source_path):
     page = requests.get(source_path)
