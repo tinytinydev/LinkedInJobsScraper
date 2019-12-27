@@ -23,7 +23,7 @@ def keyword_form():
     print("URL: " + source_path)
     xtracted_info = extract_info(source_path)
 
-    return render_template('xtracted.html', title='Xtracted',keywords= xtracted_info["keywords"],must=xtracted_info["must"])
+    return render_template('xtracted.html', title='Xtracted',keywords= xtracted_info["keywords"],must=xtracted_info["must"],html=xtracted_info["html"])
 
 def extract_info(source_path):
     page = requests.get(source_path)
@@ -54,7 +54,7 @@ def extract_info(source_path):
             except:
                 content += child + '\n'
         
-        
+    original_content = content
     content = content.lower()
         
     word_arr = content.split(" ")
@@ -69,13 +69,20 @@ def extract_info(source_path):
         filtered_str += word + " "
         
 
-    return {"keywords": get_keywords(filtered_str),"must": get_musthave(filtered_str)} # To get keyword phrases ranked highest to lowest.
+    return {"keywords": get_keywords(filtered_str),"must": get_musthave(filtered_str),"html":original_content} # To get keyword phrases ranked highest to lowest.
 
 def get_keywords(content):
-    
+    keywords = []
     r = Rake() # Uses stopwords for english from NLTK, and all puntuation characters.
-    r.extract_keywords_from_text(content)
-    return r.get_ranked_phrases()[0:5] # To get keyword phrases ranked highest to lowest.
+    for line in content.split("\n"):
+        r.extract_keywords_from_text(line)
+        keywordsInSentence = r.get_ranked_phrases_with_scores()
+
+        for tup in keywordsInSentence:
+            if tup[0] >= 30.0:
+                keywords.append(tup[1])
+
+    return keywords # To get keyword phrases ranked highest to lowest.
 
 
 def get_musthave(content):

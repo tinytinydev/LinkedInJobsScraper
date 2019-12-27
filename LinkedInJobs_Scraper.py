@@ -6,7 +6,7 @@ from rake_nltk import Rake
 
 #Accenture URL: https://www.linkedin.com/jobs/view/1567822147/?alternateChannel=topapp
 
-source_path = "https://www.linkedin.com/jobs/view/1613343431/?alternateChannel=jymbii"
+source_path = "https://www.linkedin.com/jobs/view/1612246883/?alternateChannel=byview"
 page = requests.get(source_path)
 page_content = page.content
 
@@ -21,11 +21,16 @@ for child in pr.children:
     
     if child.name == 'ul':
         for grandchild in child:
-            content += grandchild.get_text() + '\n'
+                try:
+                    content += grandchild.get_text() + '\n'
+                except:
+                    content += grandchild + '\n'
             
     else:
-
-        content += child.get_text() + '\n'
+        try:
+            content += child.get_text() + '\n'
+        except:
+            content += child + '\n'
        
     
 word_arr = content.split(" ")
@@ -37,13 +42,16 @@ for word in word_arr:
     filtered_str += word + " "
     
 
-print(filtered_str)
+additional_stop = ["finding", "looking","he","she"]
+r = Rake(stopwords=additional_stop) # Uses stopwords for english from NLTK, and all puntuation characters.
 
+#r.extract_keywords_from_text(content)
 
-r = Rake() # Uses stopwords for english from NLTK, and all puntuation characters.
+for line in filtered_str.split("\n"):
+    r.extract_keywords_from_text(line)
+    ranked_phrases = r.get_ranked_phrases_with_scores()
 
-r.extract_keywords_from_text(content)
-
-print(r.get_ranked_phrases()) # To get keyword phrases ranked highest to lowest.
-
-
+    for tup in ranked_phrases:
+        if tup[0] >= 4.0:
+            print(tup[1])
+    
