@@ -5,6 +5,12 @@ from selenium import webdriver
 from nltk.corpus import stopwords
 from rake_nltk import Rake
 from flask import jsonify, request, render_template
+from urllib.request import Request, urlopen
+from webdriver_manager.chrome import ChromeDriverManager
+from sys import platform
+from pyvirtualdisplay import Display
+from xvfbwrapper import Xvfb
+from selenium.webdriver.chrome.options import Options
 
 routing = Blueprint("Routing",__name__,template_folder='templates')
 
@@ -30,10 +36,12 @@ def keyword_form():
     return render_template('xtracted.html', title='Xtracted',keywords= xtracted_info["keywords"],must=xtracted_info["must"],html=xtracted_info["html"])
 
 def extract_info(source_path):
-    page = requests.get(source_path)
-    page_content = page.content
+    driver = webdriver.Chrome() 
+    driver.get(source_path)
+    driver.implicitly_wait(3)
+    content = driver.page_source
 
-    soup = BeautifulSoup(page_content, 'html.parser')
+    soup = BeautifulSoup(content, 'html.parser')
     try:
         print(soup.find('title'))
         title = soup.find('title') #Job Posting title
