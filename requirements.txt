@@ -20,7 +20,7 @@ nltk==3.4.5
 pyasn1==0.4.8
 python-dateutil==2.8.1
 PyVirtualDisplay==0.2.5
-PyYAML==5.2
+PyYAML==5.4
 rake-nltk==1.0.4
 requests==2.22.0
 rsa==3.4.2
