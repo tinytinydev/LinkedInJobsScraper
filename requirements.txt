@@ -23,7 +23,7 @@ PyVirtualDisplay==0.2.5
 PyYAML==5.2
 rake-nltk==1.0.4
 requests==2.22.0
-rsa==3.4.2
+rsa==4.7
 s3transfer==0.2.1
 selenium==3.141.0
 six==1.13.0
